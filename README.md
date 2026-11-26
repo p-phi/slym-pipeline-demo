@@ -109,14 +109,6 @@ Fork, then set:
 Edit the allowlist in the `if:` condition to your own username. Open a PR,
 comment `/ai-review`.
 
-## Notes
-
-The workflow installs slym with `curl | bash`. Pin it to a tag or commit if
-you're running this anywhere that matters.
-
-`permissions` is scoped to `issues: write` and `pull-requests: write`. The job
-reads the diff and posts a comment; it doesn't push, and it doesn't need
-contents access.
 
 ## License
 

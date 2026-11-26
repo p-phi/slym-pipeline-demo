@@ -33,7 +33,7 @@ jobs:
       - name: Run the Weary Review
         env:
           SLYM_ENDPOINT: ${{ secrets.OPENAI_ENDPOINT }}
-          SLYM_MODEL: ${{ env.OPEN_AI_MODEL }}
+          SLYM_MODEL: ${{ vars.OPEN_AI_MODEL }}
           SLYM_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           cat pr_diff.txt \

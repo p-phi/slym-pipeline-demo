@@ -1,6 +1,7 @@
 import requests
 import json
 
+# This class looks good
 class UserService:
     def __init__(self):
         self.db = None  # Will be set later, trust me

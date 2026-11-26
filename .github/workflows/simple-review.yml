@@ -1,0 +1,50 @@
+name: Weary Senior Engineer Review
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    # Only run on PR comments (not issue comments) that contain the command
+    if: |
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/ai-review')
+      contains(fromJson('["p-phi"]'), github.event.comment.user.login)
+    
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: curl -fsSL https://raw.githubusercontent.com/p-phi/slym/main/install.sh | bash
+
+      - name: Get PR Diff
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr diff ${{ github.event.issue.number }} > pr_diff.txt
+
+      - name: Run the Weary Review
+        env:
+          SLYM_ENDPOINT: ${{ secrets.OPENAI_ENDPOINT }}
+          SLYM_MODEL: ${{ env.OPEN_AI_MODEL }}
+          SLYM_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          cat pr_diff.txt \
+            | slym .slym/bundles/weary-reviewer --run "Review with attitude" \
+            | slym-show --last > review.md
+
+      - name: Post Review Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const review = fs.readFileSync('review.md', 'utf8');
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 👴 Weary Senior Engineer Says:\n\n${review}`
+            });

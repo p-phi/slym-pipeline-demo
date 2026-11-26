@@ -38,7 +38,7 @@ jobs:
         run: |
           cat pr_diff.txt \
             | slym .slym/bundles/weary-reviewer --run "Review with attitude" \
-            | slym-show --last > review.md
+            | slym-show --last | tee review.md
 
       - name: Post Review Comment
         uses: actions/github-script@v7

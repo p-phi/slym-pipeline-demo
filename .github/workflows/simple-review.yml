@@ -9,7 +9,7 @@ jobs:
     # Only run on PR comments (not issue comments) that contain the command
     if: |
       github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/ai-review')
+      startsWith(github.event.comment.body, '/ai-review') &&
       contains(fromJson('["p-phi"]'), github.event.comment.user.login)
     
     runs-on: ubuntu-latest
